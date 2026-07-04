@@ -1,50 +1,581 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
----
+// This is the homepage. Astro pages can mix this "frontmatter" (JS logic)
+// with the HTML below. We don't need any logic here yet, just the design.
+const locations = [
+  { name: "Northside ER", address: "12600 Rolater Road, Frisco TX", phone: "(469) 501-1266", status: "Open Now" },
+  { name: "Castle Hills ER", address: "4228 N. Josey Lane, Carrollton TX", phone: "(469) 501-1266", status: "Open Now" },
+  { name: "Parker Road Urgent Care", address: "3909 W Parker Rd #104, Plano TX", phone: "(469) 609-3062", status: "Open Now" },
+];
 
+const services = [
+  { title: "Emergency Room Care", desc: "Full-service ER staffed by board-certified physicians, ready for critical and serious conditions." },
+  { title: "Pediatric Care", desc: "Gentle, specialized treatment for infants, toddlers, and teens in a comforting setting." },
+  { title: "Cardiac Care", desc: "Rapid response and advanced diagnostics for chest pain and irregular heartbeats." },
+  { title: "Lab & Imaging", desc: "On-site X-ray, CT, and lab testing for fast, accurate answers under one roof." },
+  { title: "Trauma & Injury", desc: "Expert treatment for fractures, burns, and lacerations, focused on faster recovery." },
+  { title: "Seasonal Illness", desc: "Flu, fever, and cold-season care to get your family back on its feet quickly." },
+];
+
+const stats = [
+  { number: "24/7", label: "Always open, holidays included" },
+  { number: "3", label: "Locations across the region" },
+  { number: "4.7", label: "Average patient rating" },
+  { number: "350+", label: "Verified patient reviews" },
+];
+---
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to <a href="https://docs.astro.build/"
-					>read the docs
-				</a> or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out <a
-					href="https://github.com/Charca/astro-blog-template"
-					>astro-blog-template
-				</a> by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>City Urgent Care — Emergency & Walk-In Care</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0B3B4D;
+      --navy-dark: #082A36;
+      --coral: #E4572E;
+      --coral-dark: #C2451F;
+      --cream: #FBFAF7;
+      --ink: #14262D;
+      --slate: #5B6B70;
+      --line: #E3E1DA;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      background: var(--cream);
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 { font-family: 'Fraunces', serif; line-height: 1.15; }
+
+    a { text-decoration: none; color: inherit; }
+
+    img { max-width: 100%; display: block; }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ---------- Top bar ---------- */
+    .topbar {
+      background: var(--navy-dark);
+      color: #cfe3e8;
+      font-size: 13px;
+    }
+    .topbar .wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .topbar a:hover { color: #fff; }
+    .topbar-contacts { display: flex; gap: 20px; flex-wrap: wrap; }
+
+    /* ---------- Header ---------- */
+    header.main {
+      background: var(--cream);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    header.main .wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      padding-bottom: 16px;
+    }
+    .logo {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+    .logo span { color: var(--coral); }
+    nav.links {
+      display: flex;
+      gap: 28px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    nav.links a { color: var(--ink); }
+    nav.links a:hover { color: var(--coral); }
+    .btn-call {
+      background: var(--coral);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background 0.15s ease;
+    }
+    .btn-call:hover { background: var(--coral-dark); color: #fff; }
+
+    @media (max-width: 860px) {
+      nav.links { display: none; }
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      background: var(--navy);
+      color: #fff;
+      padding: 72px 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #9FD8CC;
+      background: rgba(159, 216, 204, 0.1);
+      padding: 6px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #4ADE80;
+      display: inline-block;
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+    .hero h1 {
+      font-size: clamp(34px, 4.5vw, 54px);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .hero h1 em { font-style: normal; color: #9FD8CC; }
+    .hero p.lede {
+      font-size: 17px;
+      color: #C8DADE;
+      max-width: 480px;
+      margin-bottom: 32px;
+    }
+    .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--coral);
+      color: #fff;
+      padding: 14px 26px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .btn-primary:hover { background: var(--coral-dark); }
+    .btn-ghost {
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 14px 26px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .btn-ghost:hover { border-color: #fff; }
+
+    /* Status board - signature element */
+    .status-board {
+      background: var(--navy-dark);
+      border: 1px solid rgba(159, 216, 204, 0.25);
+      border-radius: 8px;
+      padding: 4px;
+    }
+    .status-board-head {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9FD8CC;
+      padding: 14px 18px 10px;
+    }
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 18px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 14px;
+    }
+    .status-row .name { font-weight: 600; color: #fff; }
+    .status-row .addr { color: #8FA9AE; font-size: 12.5px; margin-top: 2px; }
+    .status-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: rgba(74, 222, 128, 0.15);
+      color: #4ADE80;
+      padding: 4px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .hero-wave {
+      height: 60px;
+      margin-top: 56px;
+      background: var(--cream);
+      border-radius: 100% 100% 0 0 / 100% 100% 0 0;
+    }
+
+    @media (max-width: 860px) {
+      .hero-inner { grid-template-columns: 1fr; }
+    }
+
+    /* ---------- Stats bar ---------- */
+    .stats {
+      background: var(--cream);
+      padding: 0 0 64px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: -40px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 32px 24px;
+      box-shadow: 0 12px 30px -18px rgba(11,59,77,0.25);
+    }
+    .stat-item { text-align: center; }
+    .stat-item .num {
+      font-family: 'Fraunces', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .stat-item .label {
+      font-size: 13px;
+      color: var(--slate);
+      margin-top: 4px;
+    }
+    @media (max-width: 700px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ---------- Section shared ---------- */
+    section.block { padding: 72px 0; }
+    .section-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: 12px;
+    }
+    .section-head h2 {
+      font-size: clamp(26px, 3.2vw, 36px);
+      color: var(--navy);
+      max-width: 640px;
+    }
+    .section-head p {
+      color: var(--slate);
+      max-width: 560px;
+      margin-top: 14px;
+      font-size: 15.5px;
+    }
+
+    /* ---------- Services ---------- */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .service-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 26px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .service-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 28px -18px rgba(11,59,77,0.3);
+      border-color: transparent;
+    }
+    .service-card h3 {
+      font-size: 18px;
+      color: var(--navy);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .service-card p { color: var(--slate); font-size: 14.5px; }
+    @media (max-width: 860px) {
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .services-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ---------- Why choose us ---------- */
+    .why-block { background: #fff; }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px 40px;
+      margin-top: 40px;
+    }
+    .why-item { display: flex; gap: 16px; }
+    .why-item .mark {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--coral);
+      border: 1px solid var(--coral);
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .why-item h3 { font-size: 16.5px; color: var(--navy); margin-bottom: 6px; }
+    .why-item p { color: var(--slate); font-size: 14.5px; }
+
+    /* ---------- CTA banner ---------- */
+    .cta-banner {
+      background: var(--coral);
+      color: #fff;
+      padding: 56px 0;
+      text-align: center;
+    }
+    .cta-banner h2 { font-size: clamp(24px, 3vw, 32px); margin-bottom: 12px; }
+    .cta-banner p { color: #FFE3D9; margin-bottom: 28px; }
+    .cta-banner .btn-primary { background: var(--navy-dark); }
+    .cta-banner .btn-primary:hover { background: #06202A; }
+
+    /* ---------- Footer ---------- */
+    footer {
+      background: var(--navy-dark);
+      color: #9CB4B9;
+      padding: 56px 0 28px;
+      font-size: 14px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    footer h4 { color: #fff; font-size: 14px; margin-bottom: 14px; font-weight: 600; }
+    footer ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    footer a:hover { color: #fff; }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 20px;
+      font-size: 13px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    @media (max-width: 860px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top contact bar -->
+  <div class="topbar">
+    <div class="wrap">
+      <div class="topbar-contacts">
+        <a href="mailto:info@cityurgentcare.com">info@cityurgentcare.com</a>
+        <a href="tel:+14695011266">Main: (469) 501-1266</a>
+      </div>
+      <div>Walk-ins welcome — 24 hours a day, every day</div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="main">
+    <div class="wrap">
+      <div class="logo">City<span>Urgent</span>Care</div>
+      <nav class="links">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#locations">Locations</a>
+        <a href="#why">Why Us</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a href="tel:+14695011266" class="btn-call">Call Now</a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <div class="wrap">
+      <div class="hero-inner">
+        <div>
+          <span class="eyebrow">Open right now · No appointment needed</span>
+          <h1>Emergency care that shows up <em>when you need it most</em></h1>
+          <p class="lede">Board-certified physicians, minimal wait times, and compassionate care across three locations — walk in any hour, any day.</p>
+          <div class="hero-ctas">
+            <a href="#locations" class="btn-primary">Find Nearest Location</a>
+            <a href="tel:+14695011266" class="btn-ghost">Call (469) 501-1266</a>
+          </div>
+        </div>
+
+        <div class="status-board">
+          <div class="status-board-head">Live location status</div>
+          {locations.map((loc) => (
+            <div class="status-row">
+              <div>
+                <div class="name">{loc.name}</div>
+                <div class="addr">{loc.address}</div>
+              </div>
+              <span class="status-tag">{loc.status}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div class="hero-wave"></div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats">
+    <div class="wrap">
+      <div class="stats-grid">
+        {stats.map((s) => (
+          <div class="stat-item">
+            <div class="num">{s.number}</div>
+            <div class="label">{s.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="block" id="services">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-eyebrow">What we treat</div>
+        <h2>Comprehensive emergency and urgent care, under one roof</h2>
+        <p>From seasonal flu to cardiac emergencies, our physicians handle it all — with speed and compassion.</p>
+      </div>
+      <div class="services-grid">
+        {services.map((s) => (
+          <div class="service-card">
+            <h3>{s.title}</h3>
+            <p>{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Why choose us -->
+  <section class="block why-block" id="why">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-eyebrow">Why patients choose us</div>
+        <h2>Care built around you, not the clock</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-item">
+          <div class="mark">01</div>
+          <div>
+            <h3>Patient-first treatment</h3>
+            <p>Every visit is tailored to you — you're never just a number in a queue.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="mark">02</div>
+          <div>
+            <h3>Minimal wait times</h3>
+            <p>A streamlined check-in and triage process gets you seen fast.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="mark">03</div>
+          <div>
+            <h3>Free initial screening</h3>
+            <p>An initial evaluation shouldn't come with a financial barrier.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="mark">04</div>
+          <div>
+            <h3>Modern, comfortable facilities</h3>
+            <p>A clean, boutique-style space designed for your comfort — not a typical sterile waiting room.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-banner" id="contact">
+    <div class="wrap">
+      <h2>Need care right now? Just walk in.</h2>
+      <p>No appointment needed — open 24 hours a day, every day of the year.</p>
+      <a href="tel:+14695011266" class="btn-primary">Call (469) 501-1266</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="locations">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div class="logo" style="color:#fff; margin-bottom: 12px;">City<span>Urgent</span>Care</div>
+          <p>Compassionate, affordable emergency and urgent care — available around the clock at every location.</p>
+        </div>
+        <div>
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#services">Emergency Room</a></li>
+            <li><a href="#services">Pediatric Care</a></li>
+            <li><a href="#services">Cardiac Care</a></li>
+            <li><a href="#services">Lab & Imaging</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Locations</h4>
+          <ul>
+            {locations.map((loc) => (<li><a href="#">{loc.name}</a></li>))}
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:info@cityurgentcare.com">info@cityurgentcare.com</a></li>
+            <li><a href="tel:+14695011266">(469) 501-1266</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 City Urgent Care. All rights reserved.</span>
+        <span>Built while learning Astro + Cloudflare 🚀</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
 </html>
