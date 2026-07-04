@@ -1,0 +1,228 @@
+---
+// This is a "Layout" — a reusable frame with header + nav + footer.
+// Every page (Home, About, Services, etc.) will wrap its own content
+// inside this Layout, so the header/menu/footer stay identical everywhere.
+// Change the menu here ONCE, and it updates on all pages automatically.
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = "Sina Medical Care — Direct Primary Care in Illinois" } = Astro.props;
+
+const menu = [
+  { label: "Home", href: "/" },
+  {
+    label: "About",
+    href: "/about",
+    children: [
+      { label: "About Sina Medical", href: "/about" },
+      { label: "Meet Dr. Ali", href: "/about/dr-ali" },
+      { label: "Certifications", href: "/about/certifications" },
+      { label: "Testimonials", href: "/about/testimonials" },
+    ],
+  },
+  {
+    label: "Services",
+    href: "/services",
+    children: [
+      { label: "Direct Primary Care", href: "/services/direct-primary-care" },
+      { label: "Urgent Care", href: "/services/urgent-care" },
+      { label: "Annual Physicals", href: "/services/annual-physicals" },
+      { label: "Women's Health", href: "/services/womens-health" },
+      { label: "Men's Health", href: "/services/mens-health" },
+    ],
+  },
+  {
+    label: "Weight Loss",
+    href: "/weight-loss",
+    children: [
+      { label: "Obesity Management", href: "/weight-loss/obesity-management" },
+      { label: "GLP-1 Medications", href: "/weight-loss/glp-1" },
+      { label: "Nutrition Counseling", href: "/weight-loss/nutrition-counseling" },
+    ],
+  },
+  {
+    label: "Chronic Disease",
+    href: "/chronic-disease",
+    children: [
+      { label: "Diabetes", href: "/chronic-disease/diabetes" },
+      { label: "Hypertension", href: "/chronic-disease/hypertension" },
+      { label: "Thyroid Disorders", href: "/chronic-disease/thyroid" },
+      { label: "Mental Health", href: "/chronic-disease/mental-health" },
+    ],
+  },
+  {
+    label: "HRT",
+    href: "/hrt",
+    children: [
+      { label: "Women's HRT", href: "/hrt/womens-hrt" },
+      { label: "TRT Overview (Men)", href: "/hrt/trt-overview" },
+      { label: "Andropause", href: "/hrt/andropause" },
+    ],
+  },
+  {
+    label: "Lifestyle",
+    href: "/lifestyle",
+    children: [
+      { label: "Lifestyle Medicine", href: "/lifestyle/overview" },
+      { label: "6 Pillars Program", href: "/lifestyle/6-pillars" },
+      { label: "Longevity Medicine", href: "/lifestyle/longevity" },
+    ],
+  },
+  { label: "Pricing", href: "/pricing" },
+  {
+    label: "Resources",
+    href: "/resources",
+    children: [
+      { label: "Blog", href: "/resources/blog" },
+      { label: "Gallery", href: "/resources/gallery" },
+      { label: "FAQs", href: "/resources/faqs" },
+      { label: "Contact Us", href: "/contact" },
+    ],
+  },
+  { label: "Locations", href: "/locations" },
+];
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} | Sina Medical Care</title>
+  <meta name="description" content={description} />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: #0E7C7B;
+      --teal-dark: #0A5E5D;
+      --gold: #D4A447;
+      --cream: #FBFAF7;
+      --ink: #16292B;
+      --slate: #5C6E70;
+      --line: #E3E6E4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; color: var(--ink); background: var(--cream); }
+    h1, h2, h3 { font-family: 'Fraunces', serif; }
+    a { text-decoration: none; color: inherit; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; z-index: 100;
+    }
+    header .wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+    }
+    .logo { font-family: 'Fraunces', serif; font-weight: 700; font-size: 20px; color: var(--teal-dark); }
+    .logo span { color: var(--gold); }
+
+    nav.main-nav { display: flex; gap: 4px; }
+    nav.main-nav > ul { display: flex; list-style: none; gap: 2px; }
+    nav.main-nav > ul > li { position: relative; }
+    nav.main-nav > ul > li > a {
+      display: block; padding: 10px 14px; font-size: 14px; font-weight: 500;
+      border-radius: 6px; white-space: nowrap;
+    }
+    nav.main-nav > ul > li > a:hover { background: #F0F5F4; color: var(--teal-dark); }
+
+    .dropdown {
+      display: none;
+      position: absolute; top: 100%; left: 0;
+      background: #fff; border: 1px solid var(--line); border-radius: 8px;
+      min-width: 220px; padding: 8px; box-shadow: 0 14px 30px -12px rgba(0,0,0,0.15);
+    }
+    nav.main-nav > ul > li:hover .dropdown { display: block; }
+    .dropdown li a { display: block; padding: 9px 12px; font-size: 13.5px; border-radius: 5px; }
+    .dropdown li a:hover { background: #F0F5F4; color: var(--teal-dark); }
+
+    .btn-call {
+      background: var(--teal); color: #fff; padding: 10px 18px;
+      border-radius: 5px; font-size: 14px; font-weight: 600; white-space: nowrap;
+    }
+    .btn-call:hover { background: var(--teal-dark); }
+
+    @media (max-width: 1100px) {
+      nav.main-nav { display: none; } /* mobile menu can be added later */
+    }
+
+    /* Footer */
+    footer { background: var(--teal-dark); color: #C9DEDD; padding: 48px 0 24px; font-size: 14px; margin-top: 64px; }
+    footer .wrap { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 28px; padding-bottom: 28px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    footer h4 { color: #fff; font-size: 14px; margin-bottom: 12px; }
+    footer ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    footer a:hover { color: #fff; }
+    .footer-bottom { text-align: center; padding-top: 18px; font-size: 12.5px; }
+    @media (max-width: 860px) { footer .wrap { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="wrap">
+      <a href="/" class="logo">Sina<span>Medical</span></a>
+      <nav class="main-nav">
+        <ul>
+          {menu.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+              {item.children && (
+                <ul class="dropdown">
+                  {item.children.map((child) => (
+                    <li><a href={child.href}>{child.label}</a></li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <a href="tel:+18475551234" class="btn-call">Call Now</a>
+    </div>
+  </header>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div>
+        <div class="logo" style="color:#fff; margin-bottom: 10px;">Sina<span>Medical</span></div>
+        <p>Direct Primary Care built around you — accessible, affordable, and personal healthcare across Illinois.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="/services/direct-primary-care">Direct Primary Care</a></li>
+          <li><a href="/weight-loss/glp-1">GLP-1 Weight Loss</a></li>
+          <li><a href="/hrt/womens-hrt">HRT</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/resources/blog">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="/contact">Contact Us</a></li>
+          <li><a href="/locations">Locations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom wrap">© 2026 Sina Medical Care. All rights reserved.</div>
+  </footer>
+
+</body>
+</html>
